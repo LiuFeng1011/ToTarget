@@ -33,7 +33,7 @@ public class InGameLevelManager : BaseGameObject {
         GameObject obj = Resources.Load("Prefabs/MapObj/InGameStep") as GameObject;
         obj = MonoBehaviour.Instantiate(obj);
 
-        obj.transform.position = new Vector3(addStepDis,0,Random.Range(-3,3));
+        obj.transform.position = new Vector3(addStepDis,0,Random.Range(-GameConst.MAP_OBJ_MAX_POSX,GameConst.MAP_OBJ_MAX_POSX));
         InGameStep step = obj.GetComponent<InGameStep>();
         stepList.Add(step);
 

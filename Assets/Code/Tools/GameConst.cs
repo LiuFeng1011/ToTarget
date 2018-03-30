@@ -55,6 +55,8 @@ public static class GameConst  {
 	public const string userDataFileName = "userdata";
 	public const string CONF_FILE_NAME = ".msconfig";
 
+    public const int MAP_WIDTH = 8;
+    public const int MAP_OBJ_MAX_POSX = 3;
 	
 	public static string GetLevelDataFilePath(string filename){
 		if (!Directory.Exists(Application.persistentDataPath + "/LevelData"))

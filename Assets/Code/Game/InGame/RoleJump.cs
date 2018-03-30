@@ -10,7 +10,7 @@ public class RoleJump : MonoBehaviour {
     float moveTime = 0f;
     float maxTime;
 
-    bool isStart = false;
+    bool isStart = false, isfull = false;
 
     public void JumpStart(Vector3 startPos, Vector3 targetPos, float speed){
         this.targetPos = targetPos;
@@ -21,10 +21,11 @@ public class RoleJump : MonoBehaviour {
         maxTime = Vector3.Distance(targetPos, startPos) / speed;
 
         transform.position = startPos;
-        transform.forward = targetPos - startPos;
+        //transform.forward = targetPos - startPos;
 
         moveTime = 0f;
         isStart = true;
+        isfull = false;
     }
 
     public void Stop(){
@@ -36,6 +37,14 @@ public class RoleJump : MonoBehaviour {
         if (!isStart) return;
 
         moveTime += Time.deltaTime;
+
+        if(!isfull){
+            if (moveTime > maxTime){
+                moveTime = maxTime;
+                isfull = true;
+            }
+        }
+
         float rate = moveTime / maxTime;
         Vector3 pos = startPos + (targetPos - startPos) * (rate);
         pos.y = JumpFormula(distance * rate, distance, distance * 0.3f,0);
@@ -44,7 +53,6 @@ public class RoleJump : MonoBehaviour {
         //if (moveTime > maxTime)
         //{
         //    isStart = false;
-
         //    InGameManager.GetInstance().role.JumpFinished();
         //}
 	}
