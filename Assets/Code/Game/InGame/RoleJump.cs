@@ -10,7 +10,7 @@ public class RoleJump : MonoBehaviour {
     float moveTime = 0f;
     float maxTime;
 
-    bool isStart = false, isfull = false;
+    public bool isStart = false, isfull = false,isfinished = false;
 
     public void JumpStart(Vector3 startPos, Vector3 targetPos, float speed){
         this.targetPos = targetPos;
@@ -26,6 +26,7 @@ public class RoleJump : MonoBehaviour {
         moveTime = 0f;
         isStart = true;
         isfull = false;
+        isfinished = false;
     }
 
     public void Stop(){
@@ -42,6 +43,12 @@ public class RoleJump : MonoBehaviour {
             if (moveTime > maxTime){
                 moveTime = maxTime;
                 isfull = true;
+
+            }
+        }else if(!isfinished ){
+            isfinished = true;
+            if(InGameManager.GetInstance().role.JumpFinished()){
+                return;
             }
         }
 
@@ -50,11 +57,6 @@ public class RoleJump : MonoBehaviour {
         pos.y = JumpFormula(distance * rate, distance, distance * 0.3f,0);
         this.transform.position = pos;
 
-        //if (moveTime > maxTime)
-        //{
-        //    isStart = false;
-        //    InGameManager.GetInstance().role.JumpFinished();
-        //}
 	}
 
     //抛物线

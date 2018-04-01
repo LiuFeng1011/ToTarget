@@ -11,6 +11,8 @@ public class InGameRole : InGameBaseObj {
 
     Vector3 camearDis;
 
+    bool hit = false;
+
     private void Awake()
     {
         camera = Camera.main;
@@ -34,18 +36,26 @@ public class InGameRole : InGameBaseObj {
         float x = camera.transform.position.x + (transform.position.x + camearDis.x - camera.transform.position.x) * 0.2f;
         camera.transform.position = new Vector3(x, camera.transform.position.y, camera.transform.position.z);
 
+        InGameManager.GetInstance().groundPlane.transform.position = new Vector3(
+            transform.position.x,
+            InGameManager.GetInstance().groundPlane.transform.position.y,
+            InGameManager.GetInstance().groundPlane.transform.position.z);
+
         jump.JumpUpdate();
 	}
 
     public void JumpStart(Vector3 targetPos){
+        hit = false;
         jump.JumpStart(transform.position, targetPos, 5);
         InGameManager.GetInstance().touchPlane.gameObject.SetActive(false);
     }
 
-    public void JumpFinished(){
+    public bool JumpFinished(){
+        if (!hit) return false;
         jump.Stop();
         InGameManager.GetInstance().touchPlane.gameObject.SetActive(true);
         InGameManager.GetInstance().touchPlane.transform.position = new Vector3(transform.position.x,0, 0);
+        return true;
     }
 
     public override void HandleEvent(EventData resp)
@@ -79,14 +89,15 @@ public class InGameRole : InGameBaseObj {
 
     private void OnTriggerEnter(Collider other)
     {
-
+        Debug.Log(other.gameObject.name);
         InGameBaseObj obj = other.transform.GetComponent<InGameBaseObj>();
         if (obj == null) {
             Debug.Log("cant find InGameBaseObj : " + other.gameObject.name);
             return;
         }
         if(obj.mytype == enObjType.step){
-            JumpFinished();
+            //if(!jump.isfull) JumpFinished();
+            hit = true;
         }
     }
 }

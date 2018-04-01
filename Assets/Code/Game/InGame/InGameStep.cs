@@ -11,6 +11,8 @@ public class InGameStep : InGameBaseObj {
     bool isstop = false;
 
 	void Start () {
+        float scale = Random.Range(1f, 2.5f);
+        transform.localScale = new Vector3(scale,scale,scale);
         baseX = transform.position.z;
 
         moveWidth = GameConst.MAP_WIDTH / 2 - Mathf.Abs(baseX);

@@ -7,7 +7,7 @@ public class InGameManager : MonoBehaviour {
 
     public InGameRole role;
 
-    public GameObject touchPlane;
+    public GameObject touchPlane,groundPlane;
 
     GameTouchController gameTouchController;
     InGameLevelManager inGameLevelManager;
@@ -34,6 +34,9 @@ public class InGameManager : MonoBehaviour {
         GameObject touchPlaneObj = Resources.Load("Prefabs/MapObj/TouchPlane") as GameObject;
         touchPlane = Instantiate(touchPlaneObj);
 
+
+        GameObject groundPlaneObj = Resources.Load("Prefabs/MapObj/GroundPlane") as GameObject;
+        groundPlane = Instantiate(groundPlaneObj);
         //
         inGameLevelManager = new InGameLevelManager();
         inGameLevelManager.Init();
