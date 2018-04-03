@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class InGameRole : InGameBaseObj {
 
-    Camera camera;
+    public Camera camera;
     public float validTouchDistance; //200  
 
     RoleJump jump;
 
-    Vector3 camearDis;
+    Vector3 camearDis,jumpPos;
 
     bool hit = false;
+
+    GameObject flag;
+
+    int combo = 0,scores = 0;
 
     private void Awake()
     {
@@ -25,10 +29,15 @@ public class InGameRole : InGameBaseObj {
         jump = transform.GetComponent<RoleJump>();
 
         camearDis = camera.transform.position - transform.position;
+        jumpPos = transform.position;
     }
     // Use this for initialization
     void Start () {
-        
+
+        //Flag
+        GameObject flagObj = Resources.Load("Prefabs/MapObj/TargetFlag") as GameObject;
+        flag = Instantiate(flagObj);
+        flag.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -48,13 +57,28 @@ public class InGameRole : InGameBaseObj {
         hit = false;
         jump.JumpStart(transform.position, targetPos, 5);
         InGameManager.GetInstance().touchPlane.gameObject.SetActive(false);
+
+        flag.transform.position = targetPos;
+        flag.SetActive(true);
     }
 
     public bool JumpFinished(){
-        if (!hit) return false;
+        flag.SetActive(false);
+        if (!hit) {
+            // game over
+            InGameManager.GetInstance().GameOver();
+            combo = 0;
+            gameObject.SetActive(false);
+            //create efffect
+            GameObject effect = Resources.Load("Prefabs/Effect/RoleDieEffect") as GameObject;
+            effect = Instantiate(effect);
+            effect.transform.position = transform.position;
+            return false;
+        }
         jump.Stop();
-        InGameManager.GetInstance().touchPlane.gameObject.SetActive(true);
-        InGameManager.GetInstance().touchPlane.transform.position = new Vector3(transform.position.x,0, 0);
+        ResetTouchPlane();
+        jumpPos = transform.position;
+
         return true;
     }
 
@@ -74,7 +98,7 @@ public class InGameRole : InGameBaseObj {
 
     public void TouchToPlane(Vector3 pos)
     {
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = camera.ScreenPointToRay(pos);
 
         RaycastHit hitInfo;
 
@@ -89,6 +113,9 @@ public class InGameRole : InGameBaseObj {
 
     private void OnTriggerEnter(Collider other)
     {
+        if(hit ){
+            return;
+        }
         Debug.Log(other.gameObject.name);
         InGameBaseObj obj = other.transform.GetComponent<InGameBaseObj>();
         if (obj == null) {
@@ -98,6 +125,47 @@ public class InGameRole : InGameBaseObj {
         if(obj.mytype == enObjType.step){
             //if(!jump.isfull) JumpFinished();
             hit = true;
+
+            //combo
+            if (Mathf.Abs(transform.position.x - obj.transform.position.x) < GameConst.comboDis && 
+                Mathf.Abs(transform.position.z - obj.transform.position.z) < GameConst.comboDis){
+                GameObject effect = Resources.Load("Prefabs/Effect/ShowEnemy") as GameObject;
+                effect = Instantiate(effect);
+                effect.transform.position = obj.transform.position;
+                effect.transform.localScale = new Vector3(obj.transform.localScale.x, obj.transform.localScale.z, obj.transform.localScale.y);
+
+                combo += 1;
+            }else {
+                combo = 0;
+            }
+
+            int val = 1 + combo;
+
+            scores += val;
+            InGameManager.GetInstance().inGameUIManager.AddScores(transform.position,val,scores);
         }
+    }
+
+    public void Revive(){
+        hit = true;
+
+        gameObject.SetActive(true);
+
+        jump.Stop();
+
+        transform.position = jumpPos;
+        flag.transform.position = jumpPos;
+
+        Invoke("ResetTouchPlane", 1f);
+    }
+
+    public void ResetTouchPlane(){
+        InGameManager.GetInstance().touchPlane.gameObject.SetActive(true);
+        InGameManager.GetInstance().touchPlane.transform.position = new Vector3(transform.position.x, 0, 0);
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Remove(this);
     }
 }

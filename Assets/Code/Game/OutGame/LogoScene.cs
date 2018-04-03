@@ -6,7 +6,7 @@ public class LogoScene : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Invoke("ChangeScene",1.0f);
+        Invoke("ChangeScene",0.1f);
 	}
 	
 	// Update is called once per frame

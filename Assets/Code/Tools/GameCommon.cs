@@ -208,86 +208,33 @@ public class GameCommon  {
 		return Resources.Load(path);
 	}
 
-//	public static void WriteInGameEvent(List<InGameEvent> receiveEventList,DataStream writer){
-//		int evecount = receiveEventList.Count;
-//		writer.WriteSInt32(evecount);
-//		
-//		for(int i = 0 ; i < evecount ; i ++){
-//			InGameEvent eve = receiveEventList[i];
-//
-//			writer.WriteSInt32((int)eve.mytype);
-//			
-//			FieldInfo[] fields = eve.GetType().GetFields();
-//			foreach (FieldInfo field in fields){
-//				if(field.Name == "mytype"){
-//					continue;
-//				}
-//				if(field.FieldType == typeof(int)){
-//					int val = (int)field.GetValue(eve);
-//					writer.WriteSInt32(val);
-//				}else if(field.FieldType == typeof(float)){
-//					float val = (float)field.GetValue(eve);
-//					writer.WriteSInt32((int)(val*1000));
-//				}else if(field.FieldType == typeof(bool)){
-//					bool val = (bool)field.GetValue(eve);
-//					writer.WriteSInt32(val?1:0);
-//				}else if(field.FieldType == typeof(Vector2)){
-//					Vector2 val = (Vector2)field.GetValue(eve);
-//					writer.WriteSInt32((int)(val.x*1000));
-//					writer.WriteSInt32((int)(val.y*1000));
-//				}else if(field.FieldType == typeof(KeyCode)){
-//					KeyCode val = (KeyCode)field.GetValue(eve);
-//					writer.WriteSInt32((int)(val));
-//				}else if(field.FieldType == typeof(string)){
-//					string val = (string)field.GetValue(eve);
-//					writer.WriteString16(val);
-//				}
-//			}
-//		}
-//	}
-//	
-//	public static void ReadInGameEvent(List<InGameEvent> receiveEventList,DataStream reader){
-//		int evecount = reader.ReadSInt32();
-//		
-//		for(int i = 0 ; i < evecount ; i ++){
-//			InGameEventType type = (InGameEventType)reader.ReadSInt32();
-//
-//			InGameEvent eve = InGameEvent.CreateEveByType(type);
-//			
-//			FieldInfo[] fields = eve.GetType().GetFields();
-//
-//			foreach (FieldInfo field in fields){
-//				if(field.Name == "mytype"){
-//					continue;
-//				}
-//				if(field.FieldType == typeof(int)){
-//					int val = reader.ReadSInt32();
-//					field.SetValue(eve,val);
-//				}else if(field.FieldType == typeof(float)){
-//					int val = reader.ReadSInt32();
-//					float floatval = (float)val / 1000f;
-//					field.SetValue(eve,floatval);
-//				}else if(field.FieldType == typeof(bool)){
-//					int val = reader.ReadSInt32();
-//					field.SetValue(eve,val == 1);
-//				}else if(field.FieldType == typeof(Vector2)){
-//					Vector2 val = new Vector2(
-//						(float)reader.ReadSInt32() / 1000f,
-//						(float)reader.ReadSInt32() / 1000f);
-//					
-//					field.SetValue(eve,val);
-//				}else if(field.FieldType == typeof(KeyCode)){
-//					int val = reader.ReadSInt32();
-//					field.SetValue(eve,(KeyCode)val);
-//				}else if(field.FieldType == typeof(string)){
-//					string val = reader.ReadString16();
-//					field.SetValue(eve,val);
-//				}
-//			}
-//
-//			receiveEventList.Add(eve);
-//		}
-//	}
+    /// <summary>
+    /// 坐标点是否在屏幕内
+    /// </summary>
+    /// <returns><c>true</c> if is position in screen; otherwise, <c>false</c>.</returns>
+    public static bool IsPositionInScreen(Vector3 pos)
+    {
+        int cutDistance = 100;
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(pos);
+        if (screenPos.x < -cutDistance || screenPos.y < -cutDistance || screenPos.x > Screen.width + cutDistance || screenPos.y > Screen.height + cutDistance)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// 世界坐标转NGUI坐标
+    /// </summary>
+    /// <returns>The position to NGUI position.</returns>
+    /// <param name="camera">Camera.</param>
+    public static Vector3 WorldPosToNGUIPos(Camera worldCamera, Camera uiCamera, Vector3 pos)
+    {
+        Vector3 screenpos = worldCamera.WorldToScreenPoint(pos);
+        screenpos.z = 0f;   //把z设置为0
+        Vector3 uipos = uiCamera.ScreenToWorldPoint(screenpos);
+        return uipos;
+    }
 }
 
 public class GameItem{

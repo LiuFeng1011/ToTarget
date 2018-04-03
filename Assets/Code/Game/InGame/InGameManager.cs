@@ -10,7 +10,14 @@ public class InGameManager : MonoBehaviour {
     public GameObject touchPlane,groundPlane;
 
     GameTouchController gameTouchController;
-    InGameLevelManager inGameLevelManager;
+    public InGameLevelManager inGameLevelManager;
+    public InGameUIManager inGameUIManager;
+
+    public RapidBlurEffectManager rapidBlurEffectManager;
+
+    public Camera gamecamera;
+
+    int reviveCount = 0;
 
     public static InGameManager GetInstance(){
         return instance;
@@ -19,6 +26,9 @@ public class InGameManager : MonoBehaviour {
     private void Awake()
     {
         instance = this;
+        gamecamera = Camera.main;
+
+        rapidBlurEffectManager = gamecamera.gameObject.AddComponent<RapidBlurEffectManager>();
     }
 
     // Use this for initialization
@@ -40,17 +50,50 @@ public class InGameManager : MonoBehaviour {
         //
         inGameLevelManager = new InGameLevelManager();
         inGameLevelManager.Init();
+
+        inGameUIManager = new InGameUIManager();
+        inGameUIManager.Init();
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (gameTouchController != null) gameTouchController.Update();
         if(inGameLevelManager != null)inGameLevelManager.Update();
+        if (inGameUIManager != null) inGameUIManager.Update();
 	}
 
     private void OnDestroy()
     {
-
+        instance = null;
         if (inGameLevelManager != null) inGameLevelManager.Destroy();
+        if (inGameUIManager != null) inGameUIManager.Destroy();
     }
+
+    public void GameOver(){
+        rapidBlurEffectManager.StartBlur();
+        Invoke("ShowOverLayer", 1.0f);
+    }
+
+    public void ShowOverLayer(){
+        if (reviveCount <= 0)
+        {
+            inGameUIManager.ShowReviveLayer();
+        }
+        else
+        {
+            inGameUIManager.ShowResultLayer();
+        }
+        reviveCount += 1;
+    }
+
+    public void Revive(){
+        rapidBlurEffectManager.OverBlur();
+        role.Revive();
+    }
+
+    public void Restart(){
+        reviveCount = 0;
+
+    }
+
 }

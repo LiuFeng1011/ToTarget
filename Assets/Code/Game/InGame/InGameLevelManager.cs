@@ -17,13 +17,13 @@ public class InGameLevelManager : BaseGameObject {
         float roledis = addStepDis - InGameManager.GetInstance().role.transform.position.x;
 
         while (roledis < 10){
-            addStepDis += Random.Range(2, 5);
+            addStepDis += Random.Range(4f, 6f);
             //add step
             AddStep();
             roledis = addStepDis - InGameManager.GetInstance().role.transform.position.x;
         }
 
-        while(stepList.Count > 0 && stepList[0].transform.position.x + 5 < InGameManager.GetInstance().role.transform.position.x){
+        while(stepList.Count > 0 && stepList[0].transform.position.x + 10 < InGameManager.GetInstance().role.transform.position.x){
             MonoBehaviour.Destroy(stepList[0].gameObject);
             stepList.RemoveAt(0);
         }
@@ -33,7 +33,7 @@ public class InGameLevelManager : BaseGameObject {
         GameObject obj = Resources.Load("Prefabs/MapObj/InGameStep") as GameObject;
         obj = MonoBehaviour.Instantiate(obj);
 
-        obj.transform.position = new Vector3(addStepDis,0,Random.Range(-GameConst.MAP_OBJ_MAX_POSX,GameConst.MAP_OBJ_MAX_POSX));
+        obj.transform.position = new Vector3(addStepDis, 0f,Random.Range(-GameConst.MAP_OBJ_MAX_POSX,GameConst.MAP_OBJ_MAX_POSX));
         InGameStep step = obj.GetComponent<InGameStep>();
         stepList.Add(step);
 
