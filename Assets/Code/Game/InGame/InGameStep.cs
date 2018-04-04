@@ -18,6 +18,12 @@ public class InGameStep : InGameBaseObj {
     public static AnimationCurve downAC;
     //public AnimationCurve downAC_;
 
+    float minSize = 1, maxSize = 2.5f;
+    public void Init(float minSize, float maxSize){
+        this.minSize = minSize;
+        this.maxSize = maxSize;
+    }
+
 	void Start () {
 
         if(m_light == null){
@@ -34,7 +40,7 @@ public class InGameStep : InGameBaseObj {
             downAC = new AnimationCurve(ks);
         }
 
-        float scale = Random.Range(1f, 2.5f);
+        float scale = Random.Range(minSize, maxSize);
         transform.localScale = new Vector3(scale,transform.localScale.y,scale);
         baseX = transform.position.z;
 

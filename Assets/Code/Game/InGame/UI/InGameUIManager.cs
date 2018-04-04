@@ -45,7 +45,7 @@ public class InGameUIManager : BaseGameObject {
 
     public void ShowResultLayer(){
         resultLayerManager.Show();
-        resultLayerManager.SetVal(123);
+        resultLayerManager.SetVal(InGameManager.GetInstance().role.scores);
         HideGamePad();
     }
 

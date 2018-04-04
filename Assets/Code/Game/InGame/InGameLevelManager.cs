@@ -8,12 +8,17 @@ public class InGameLevelManager : BaseGameObject {
 
     List<InGameStep> stepList = new List<InGameStep>();
 
+    float minSize, maxSize, nowSize, randomRange = 0.5f;
 
     public void Init(){
-        
+        minSize = GameConst.STEP_MIN_SIZE;
+        maxSize = GameConst.STEP_MAX_SIZE;
+        nowSize = maxSize;
     }
 
     public void Update(){
+
+        //
         float roledis = addStepDis - InGameManager.GetInstance().role.transform.position.x;
 
         while (roledis < 10){
@@ -37,6 +42,12 @@ public class InGameLevelManager : BaseGameObject {
         InGameStep step = obj.GetComponent<InGameStep>();
         stepList.Add(step);
 
+        float dis = InGameManager.GetInstance().role.transform.position.x;
+
+        nowSize = 1-Mathf.Min(dis / 100f, 1f);
+
+        nowSize = minSize + (maxSize - minSize) * nowSize;
+        step.Init(Mathf.Max(nowSize-randomRange,minSize),Mathf.Min(nowSize + randomRange,maxSize));
     }
 
     public void Destroy(){

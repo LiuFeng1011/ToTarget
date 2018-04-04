@@ -19,6 +19,10 @@ public class InGameManager : MonoBehaviour {
 
     int reviveCount = 0;
 
+    InGameBaseModel modelManager;
+
+    enGameState gameState;
+
     public static InGameManager GetInstance(){
         return instance;
     }
@@ -53,13 +57,27 @@ public class InGameManager : MonoBehaviour {
 
         inGameUIManager = new InGameUIManager();
         inGameUIManager.Init();
+
+        int selmodel = PlayerPrefs.GetInt(GameConst.USERDATANAME_MODEL, 0);
+        modelManager = InGameBaseModel.Create(selmodel);
+        modelManager.Init();
+
+        gameState = enGameState.playing;
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (inGameUIManager != null) inGameUIManager.Update();
+
+        if(gameState != enGameState.playing){
+            return;
+        }
+
         if (gameTouchController != null) gameTouchController.Update();
         if(inGameLevelManager != null)inGameLevelManager.Update();
-        if (inGameUIManager != null) inGameUIManager.Update();
+        if (modelManager != null) modelManager.Update();
+        if (role != null) role.RoleUpdate();
 	}
 
     private void OnDestroy()
@@ -67,14 +85,30 @@ public class InGameManager : MonoBehaviour {
         instance = null;
         if (inGameLevelManager != null) inGameLevelManager.Destroy();
         if (inGameUIManager != null) inGameUIManager.Destroy();
+        if (modelManager != null) modelManager.Destroy();
     }
 
     public void GameOver(){
+        gameState = enGameState.over;
+
         rapidBlurEffectManager.StartBlur();
         Invoke("ShowOverLayer", 1.0f);
     }
 
     public void ShowOverLayer(){
+
+        gameState = enGameState.over;
+
+        int selmodel = PlayerPrefs.GetInt(GameConst.USERDATANAME_MODEL, 0);
+        int basescores = PlayerPrefs.GetInt(GameConst.USERDATANAME_MODEL_MAXSCORES + selmodel);
+
+        int thisscores = role.scores;
+        if (basescores < thisscores)
+        {
+            PlayerPrefs.SetInt(GameConst.USERDATANAME_MODEL_MAXSCORES + selmodel, thisscores);
+        }
+        PlayerPrefs.SetInt(GameConst.USERDATANAME_MODEL_LASTSCORES + selmodel, thisscores);
+
         if (reviveCount <= 0)
         {
             inGameUIManager.ShowReviveLayer();
@@ -82,13 +116,26 @@ public class InGameManager : MonoBehaviour {
         else
         {
             inGameUIManager.ShowResultLayer();
+
         }
         reviveCount += 1;
     }
 
+    public void Pause(){
+        gameState = enGameState.pause;
+    }
+
+    public void Resume(){
+        gameState = enGameState.playing;
+    }
+
     public void Revive(){
+
+        gameState = enGameState.playing;
+
         rapidBlurEffectManager.OverBlur();
         role.Revive();
+        modelManager.Revive();
     }
 
     public void Restart(){

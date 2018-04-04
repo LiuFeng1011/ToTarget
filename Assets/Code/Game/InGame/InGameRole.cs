@@ -15,7 +15,7 @@ public class InGameRole : InGameBaseObj {
 
     GameObject flag;
 
-    int combo = 0,scores = 0;
+    public int combo = 0,scores = 0;
 
     private void Awake()
     {
@@ -41,7 +41,8 @@ public class InGameRole : InGameBaseObj {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public void RoleUpdate () {
+        if (!gameObject.activeSelf) return;
         float x = camera.transform.position.x + (transform.position.x + camearDis.x - camera.transform.position.x) * 0.2f;
         camera.transform.position = new Vector3(x, camera.transform.position.y, camera.transform.position.z);
 
@@ -65,14 +66,7 @@ public class InGameRole : InGameBaseObj {
     public bool JumpFinished(){
         flag.SetActive(false);
         if (!hit) {
-            // game over
-            InGameManager.GetInstance().GameOver();
-            combo = 0;
-            gameObject.SetActive(false);
-            //create efffect
-            GameObject effect = Resources.Load("Prefabs/Effect/RoleDieEffect") as GameObject;
-            effect = Instantiate(effect);
-            effect.transform.position = transform.position;
+            Die();
             return false;
         }
         jump.Stop();
@@ -80,6 +74,17 @@ public class InGameRole : InGameBaseObj {
         jumpPos = transform.position;
 
         return true;
+    }
+
+    public void Die(){
+        // game over
+        InGameManager.GetInstance().GameOver();
+        combo = 0;
+        gameObject.SetActive(false);
+        //create efffect
+        GameObject effect = Resources.Load("Prefabs/Effect/RoleDieEffect") as GameObject;
+        effect = Instantiate(effect);
+        effect.transform.position = transform.position;
     }
 
     public override void HandleEvent(EventData resp)
@@ -155,6 +160,7 @@ public class InGameRole : InGameBaseObj {
 
         transform.position = jumpPos;
         flag.transform.position = jumpPos;
+        flag.SetActive(false);
 
         Invoke("ResetTouchPlane", 1f);
     }

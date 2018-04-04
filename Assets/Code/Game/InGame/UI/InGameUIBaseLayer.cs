@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InGameUIBaseLayer : BaseUnityObject {
-    float showTime = 0, hideTime = 0, maxActionTime = 0.5f, actionHeight = -100f;
+    protected float showTime = 0, hideTime = 0, maxActionTime = 0.5f, actionHeight = -100f;
 
     public static AnimationCurve action;
 
-    UILabel actionLabel;
+    protected UILabel actionLabel;
 
     public void ActionUpdate()
     {
@@ -41,11 +41,12 @@ public class InGameUIBaseLayer : BaseUnityObject {
     }
 
     public virtual void Hide(){
+        if (!gameObject.activeSelf) return;
         hideTime = maxActionTime;
     }
 
 
-    void ShowAction()
+    protected virtual void ShowAction()
     {
         if (showTime <= 0) return;
         showTime -= Time.deltaTime;
@@ -57,7 +58,7 @@ public class InGameUIBaseLayer : BaseUnityObject {
         actionLabel.color = new Color(1, 1, 1, 1-rate);
     }
 
-    void HideAction()
+    protected virtual void HideAction()
     {
         if (hideTime <= 0) return;
         hideTime -= Time.deltaTime*2;

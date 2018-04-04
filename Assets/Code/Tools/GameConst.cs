@@ -50,15 +50,49 @@ public enum enAIType{
 	en_aitype_patrol,//巡逻
 }
 
+public enum enGameState{
+    ready,
+    playing,
+    pause,
+    over
+}
+
+public struct GameModel{
+    public int modelid;
+    public string name;
+
+    public GameModel(int modelid,string name){
+        this.modelid = modelid;
+        this.name = name;
+    }
+}
+
 public static class GameConst  {
 	
 	public const string userDataFileName = "userdata";
 	public const string CONF_FILE_NAME = ".msconfig";
 
+    public const string USERDATANAME_MODEL = "model";
+    public const string USERDATANAME_MODEL_MAXSCORES = "model_maxscores_";
+    public const string USERDATANAME_MODEL_LASTSCORES = "model_lastscores_";
+
+
+    public static GameModel[] gameModels = {
+        new GameModel(0,"NORMAL"),
+        new GameModel(1,"SPEED"),
+        new GameModel(2,"TIME"),
+    };
+
+
     public const int MAP_WIDTH = 8;
     public const float MAP_OBJ_MAX_POSX = 3;
 
-    public const float comboDis = 1f;
+    public const float comboDis = 0.3f;
+    public const int timeModelTime = 60;
+
+    public const float STEP_MIN_SIZE = 1f;
+    public const float STEP_MAX_SIZE = 2.5f;
+
 	
 	public static string GetLevelDataFilePath(string filename){
 		if (!Directory.Exists(Application.persistentDataPath + "/LevelData"))

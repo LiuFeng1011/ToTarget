@@ -34,7 +34,7 @@ public class GamePadScoresLabel : MonoBehaviour {
 
     void ToTarget(){
         toTargetTime += Time.deltaTime;
-        Debug.Log(toTargetTime);
+
         if (toTargetTime < toTargetDeltaTime) return;
 
         toTargetTime = 0f;

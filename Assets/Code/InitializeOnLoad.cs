@@ -8,7 +8,7 @@ public class InitializeOnLoad : MonoBehaviour {
 	[RuntimeInitializeOnLoadMethod]
 	static void Initialize()
 	{
-		if (SceneManager.GetActiveScene().name == "Gate")
+        if (SceneManager.GetActiveScene().name == "Gate" || SceneManager.GetActiveScene().name == "TestScene")
 		{
 			return;
 		}
