@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class GamePadScoresLabel : MonoBehaviour {
 
-    float labelActionTime = 0f, labelActionMaxTime = 0.5f, toTargetTime = 0f, toTargetDeltaTime = 0.2f;
-
+    public float labelActionTime = 0f, labelActionMaxTime = 0.5f, toTargetTime = 0f, toTargetDeltaTime = 0.2f;
+    public float actionScale = 0.5f;
     UILabel scoreslabel;
     Vector3 baseLabelScale;
 
     int nowScores, targetScores;
+
+    public void Init(int initscores){
+        nowScores = targetScores = initscores;
+    }
 	// Use this for initialization
 	void Start () {
         scoreslabel = gameObject.GetComponent<UILabel>();
@@ -28,7 +32,7 @@ public class GamePadScoresLabel : MonoBehaviour {
     {
         labelActionTime = Mathf.Max(labelActionTime - Time.deltaTime, 0);
         float rate = 1 - labelActionTime / labelActionMaxTime;
-        float scale = Mathf.Sin((3.14f) * rate) * 0.5f;
+        float scale = Mathf.Sin((3.14f) * rate) * actionScale;
         scoreslabel.transform.localScale = baseLabelScale + new Vector3(scale, scale, scale);
     }
 

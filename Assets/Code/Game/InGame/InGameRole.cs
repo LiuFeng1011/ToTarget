@@ -61,6 +61,8 @@ public class InGameRole : InGameBaseObj {
 
         flag.transform.position = targetPos;
         flag.SetActive(true);
+
+        AudioManager.Instance.Play("sound/jump");
     }
 
     public bool JumpFinished(){
@@ -77,6 +79,7 @@ public class InGameRole : InGameBaseObj {
     }
 
     public void Die(){
+        AudioManager.Instance.Play("sound/die");
         // game over
         InGameManager.GetInstance().GameOver();
         combo = 0;
@@ -140,14 +143,16 @@ public class InGameRole : InGameBaseObj {
                 effect.transform.localScale = new Vector3(obj.transform.localScale.x, obj.transform.localScale.z, obj.transform.localScale.y);
 
                 combo += 1;
+                AudioManager.Instance.Play("sound/down_combo");
             }else {
                 combo = 0;
+                AudioManager.Instance.Play("sound/down_normal");
             }
 
             int val = 1 + combo;
 
             scores += val;
-            InGameManager.GetInstance().inGameUIManager.AddScores(transform.position,val,scores);
+            InGameManager.GetInstance().inGameUIManager.AddScores(transform.position,val,scores,true);
         }
     }
 

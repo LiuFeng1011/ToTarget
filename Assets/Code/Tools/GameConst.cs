@@ -60,10 +60,12 @@ public enum enGameState{
 public struct GameModel{
     public int modelid;
     public string name;
+    public string lbname;
 
-    public GameModel(int modelid,string name){
+    public GameModel(int modelid,string name, string lbname){
         this.modelid = modelid;
         this.name = name;
+        this.lbname = lbname;
     }
 }
 
@@ -78,9 +80,9 @@ public static class GameConst  {
 
 
     public static GameModel[] gameModels = {
-        new GameModel(0,"NORMAL"),
-        new GameModel(1,"SPEED"),
-        new GameModel(2,"TIME"),
+        new GameModel(0,"NORMAL","ToTarget_Normal_Leaderboard"),
+        new GameModel(1,"SPEED","ToTarget_Speed_Leaderboard"),
+        new GameModel(2,"TIME","ToTarget_Time_Leaderboard"),
     };
 
 

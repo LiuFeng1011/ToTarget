@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class GameGate : BaseUnityObject {
 	public static bool loadFinished = false;
 
@@ -29,6 +30,10 @@ public class GameGate : BaseUnityObject {
 
         ConfigManager.LoadData();
         (new EventChangeScene(GameSceneManager.SceneTag.Logo)).Send();
+
+        GameCenterManager.GetInstance();
+        ADManager.GetInstance();
+
 	}
 	
 	// Update is called once per frame

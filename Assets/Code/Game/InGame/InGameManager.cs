@@ -23,6 +23,8 @@ public class InGameManager : MonoBehaviour {
 
     enGameState gameState;
 
+    public static float gameTime = 0f;
+
     public static InGameManager GetInstance(){
         return instance;
     }
@@ -67,7 +69,7 @@ public class InGameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        gameTime += Time.deltaTime;
         if (inGameUIManager != null) inGameUIManager.Update();
 
         if(gameState != enGameState.playing){
@@ -106,10 +108,12 @@ public class InGameManager : MonoBehaviour {
         if (basescores < thisscores)
         {
             PlayerPrefs.SetInt(GameConst.USERDATANAME_MODEL_MAXSCORES + selmodel, thisscores);
+
+            GameCenterManager.GetInstance().UploadScores(GameConst.gameModels[selmodel].lbname,thisscores);
         }
         PlayerPrefs.SetInt(GameConst.USERDATANAME_MODEL_LASTSCORES + selmodel, thisscores);
 
-        if (reviveCount <= 0)
+        if (reviveCount <= 0 && ADManager.GetInstance().isAdLoaded)
         {
             inGameUIManager.ShowReviveLayer();
         }

@@ -44,7 +44,7 @@ public class InGameLevelManager : BaseGameObject {
 
         float dis = InGameManager.GetInstance().role.transform.position.x;
 
-        nowSize = 1-Mathf.Min(dis / 100f, 1f);
+        nowSize = 1-Mathf.Min(dis / 200f, 1f);
 
         nowSize = minSize + (maxSize - minSize) * nowSize;
         step.Init(Mathf.Max(nowSize-randomRange,minSize),Mathf.Min(nowSize + randomRange,maxSize));

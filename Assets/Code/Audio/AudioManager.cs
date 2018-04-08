@@ -17,7 +17,7 @@ public class AudioManager : BaseUnityObject
     private static AudioManager instance = null;
     public static AudioManager Instance { get { return instance; } }
 
-	string _audioPath = "Prefabs/AudioSources/";//声音资源路径
+	string _audioPath = "";//声音资源路径
     string _audioSwitchKey = "Sound";//音效开关键值
     string _musicSwitchKey = "Music";//音乐开关键值
     AudioSource _mSource;

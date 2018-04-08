@@ -1,25 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Together;
 
 public class ReviveLayerManager : InGameUIBaseLayer {
 
     float timeCount;
     int nowTime;
 
-    UILabel timeLabel;
+    GamePadScoresLabel timeLabel;
 
     GameObject reviveBtn, cancelBtn;
+
+    bool showAD = false;
 
     public override void Init(){
         base.Init();
         reviveBtn = transform.Find("reviveBtn").gameObject;
-        UIEventListener.Get(reviveBtn).onClick = Revive;
+        GameUIEventListener.Get(reviveBtn).onClick = Revive;
 
         cancelBtn = transform.Find("cancelBtn").gameObject;
-        UIEventListener.Get(cancelBtn).onClick = Cancel;
+        GameUIEventListener.Get(cancelBtn).onClick = Cancel;
 
-        timeLabel = transform.Find("Time").GetComponent<UILabel>();
+        timeLabel = transform.Find("Time").GetComponent<GamePadScoresLabel>();
+        timeLabel.Init(5);
     }
 	// Use this for initialization
 	void Start () {
@@ -28,6 +32,7 @@ public class ReviveLayerManager : InGameUIBaseLayer {
 	
 	// Update is called once per frame
 	void Update () {
+        if (showAD) return;
         if(timeCount <=0){
             return;
         }
@@ -38,15 +43,25 @@ public class ReviveLayerManager : InGameUIBaseLayer {
         }
         if((int)timeCount != nowTime){
             nowTime = (int)timeCount;
-            timeLabel.text = nowTime + "";
+            //timeLabel.text = nowTime + "";
+            timeLabel.SetScores(nowTime);
         }
 
 	}
 
     void Revive(GameObject obj){
+        ADManager.GetInstance().PlayReviveAD(ADCB,ADCloseCB);
+        showAD = true;
+        //gameObject.SetActive(false);
+    }
+
+    public void ADCloseCB(string str){
+        showAD = false;
+    }
+
+    public void ADCB(string str){
         InGameManager.GetInstance().Revive();
         InGameManager.GetInstance().inGameUIManager.Revive();
-        //gameObject.SetActive(false);
         Hide();
     }
 
